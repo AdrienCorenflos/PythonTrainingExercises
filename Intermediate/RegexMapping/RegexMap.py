@@ -35,9 +35,17 @@ def matchLines(theLineS):
     If the line is all non-digits then make it lower case.
     Other lines are represented by None."""
     result = []
+    all_char = re.compile(r"[A-Za-z ]+$")
+    all_num = re.compile(r"[0-9]+$")
     for l in theLineS:
-        # Your code goes here
-        pass
+        char_match = all_char.match(l)
+        num_match = all_num.match(l)
+        if char_match is not None:
+            result.append(char_match.group().lower())
+        elif num_match is not None:
+            result.append(int(num_match.group()) // 2)
+        else:
+            result.append(None)
     return result
 
 def main():
@@ -48,7 +56,7 @@ ABCDEFGH
 Hello world
 42"""
     result = matchLines(text.split('\n'))
-    print result
+    print(result)
 
 if __name__ == '__main__':
     main()

@@ -4,7 +4,7 @@ Created on 2 Apr 2015
 @author: paulross
 '''
 import unittest
-import MarkovChain
+from . import MarkovChain
 
 class Test(unittest.TestCase):
 
@@ -26,6 +26,7 @@ class Test(unittest.TestCase):
         self._c.add('B', 'A')
         self.assertEqual(('B',), self._c.most_probable('A'))
         self.assertEqual(('A',), self._c.most_probable('B'))
+        self.assertEqual(tuple(), self._c.most_probable('C'))
 
 
 if __name__ == "__main__":

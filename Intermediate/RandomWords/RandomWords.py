@@ -31,20 +31,21 @@ Created on 26 Feb 2015
 import random
 
 def randomWords(words, n):
-    pass
+    for word in words:
+        yield word[:n] + (''.join(random.sample(word[n:], len(word)-n)) if len(word)-n > 0 else '')
 
 def main():
     # Loop round until the user just gives a <cr> i.e. enter response.
     while True:
-        line = raw_input('Words please, <cr> to exit: ')
+        line = input('Words please, <cr> to exit: ')
         words = line.split()
         if len(words) == 0:
             # User wants to quit
             break
         max_len = max([len(w) for w in words])
         for n in range(max_len):
-            print '%4d: %s' % (n, ' '.join(randomWords(words, n)))
+            print('%4d: %s' % (n, ' '.join(randomWords(words, n))))
 
 if __name__ == '__main__':
     main()
-    print 'Bye, bye.'
+    print('Bye, bye.')
