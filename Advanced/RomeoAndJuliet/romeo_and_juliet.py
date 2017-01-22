@@ -89,7 +89,7 @@ import random
 from Advanced.RomeoAndJuliet.util import parser
 from Advanced.RomeoAndJuliet.util import result
 
-
+# TODO: One Markov chain per scene
 #----------------- Strategies ----------------
 
 def strat_empty(play):
@@ -113,11 +113,32 @@ def strat_random_all(play):
     """Just guess a random actor."""
     ret_val = result.Result()
     # Get all the actors, we are going to guess one randomly
-    all_actors = play.dramatis_personae.keys()
+    all_actors = list(play.dramatis_personae.keys())
     # Iterate through the acts
     for act in play.gen_acts():
         # Iterate through the scenes
         for scene in act.gen_scenes():
+            # Prepare the results object for this act/scene
+            ret_val.set_act_scene(act, scene)
+            # Iterate through the actors in the scene
+            while True:
+                my_choice = random.choice(all_actors)
+                actual_actor = ret_val.guess(my_choice)
+                # If the actual actor is None it is the end of the scene
+                if actual_actor is None:
+                    break
+    return ret_val
+
+def strat_random_scene(play):
+    """Just guess a random actor."""
+    ret_val = result.Result()
+    # Get all the actors, we are going to guess one randomly
+
+    # Iterate through the acts
+    for act in play.gen_acts():
+        # Iterate through the scenes
+        for scene in act.gen_scenes():
+            all_actors = scene._actors
             # Prepare the results object for this act/scene
             ret_val.set_act_scene(act, scene)
             # Iterate through the actors in the scene
@@ -138,6 +159,10 @@ def main():
     print()
     print('Random in play:')
     result = strat_random_all(play)
+    print(result)
+    print()
+    print('Random in scene:')
+    result = strat_random_scene(play)
     print(result)
     print()
 
