@@ -25,19 +25,21 @@ __rights__  = 'Copyright (c) 2011 Paul Ross. Copyright (c) 2015 AHL.'
 
 def keep_sorted():
     """A co-routine that receives words and maintains a sorted list of them.
-    """ 
+    """
+    from bisect import insort_left
     l = []
     while True:
-        # Your code goes here
-        yield l
+        word = yield l
+        if isinstance(word, str):
+            insort_left(l, word)
 
 
 if __name__ == '__main__':
     g = keep_sorted()
     # Start the generator
-    g.next()
+    next(g)
     # Send stuff
-    print g.send('zzz')
-    print g.send('Hi there')
-    print 'Sorted list is {0:s}'.format(g.next())    
+    print(g.send('zzz'))
+    print(g.send('Hi there'))
+    print('Sorted list is {}'.format(next(g)))
     g.close()

@@ -86,8 +86,8 @@ Created on 18 Mar 2015
 """
 import random
 
-from Exercises.RomeoAndJuliet.util import parser
-from Exercises.RomeoAndJuliet.util import result
+from Advanced.RomeoAndJuliet.util import parser
+from Advanced.RomeoAndJuliet.util import result
 
 
 #----------------- Strategies ----------------
@@ -132,15 +132,15 @@ def strat_random_all(play):
 
 def main():
     play = parser.get_play()
-    print 'Empty strategy (always ROMEO):'
+    print('Empty strategy (always ROMEO):')
     result = strat_empty(play)
-    print result
-    print
-    print 'Random in play:'
+    print(result)
+    print()
+    print('Random in play:')
     result = strat_random_all(play)
-    print result
-    print
+    print(result)
+    print()
 
 if __name__ == '__main__':
     main()
-    print 'Bye, bye!'
+    print('Bye, bye!')

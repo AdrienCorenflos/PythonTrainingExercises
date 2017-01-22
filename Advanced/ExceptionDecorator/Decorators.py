@@ -11,26 +11,38 @@ Created on Sep 21, 2011
 @author: paulross
 """
 
-__author__  = 'Paul Ross'
-__date__    = '2011-08-03'
+__author__ = 'Paul Ross'
+__date__ = '2011-08-03'
 __version__ = '0.1.0'
-__rights__  = 'Copyright (c) 2011 Paul Ross. Copyright (c) 2015 AHL.'
+__rights__ = 'Copyright (c) 2011 Paul Ross. Copyright (c) 2015 AHL.'
 
 import functools
 
+
 def raises(exception_cls):
     """Wraps a function ensuring only one type of exception is raises."""
-    def wrap(fnIN, *args,**kwargs):
+
+    def wrap(fnIN, *args, **kwargs):
         @functools.wraps(fnIN)
         def wrap_func(*args, **kwargs):
             """Wrapping function with exception translation."""
-            # Save and delete the following line and use it in your own code
-            fnIN(*args,**kwargs)
-        return wrap_func 
+            try:
+                return fnIN(*args, **kwargs)
+            except Exception as e:
+                if isinstance(e, RightException):
+                    raise e
+                else:
+                    raise RightException("Wrong exception returned")
+
+        return wrap_func
+
     return wrap
+
 
 # Right and wrong exceptions
 class RightException(Exception): pass
+
+
 class WrongException(Exception): pass
 
 
@@ -47,6 +59,7 @@ def main():
         print('Success! caught an RightException exception: "{0:s}"'.format(str(err)))
     except WrongException as err:
         print('FAILURE! caught an WrongException exception: "{0:s}"'.format(str(err)))
+
 
 if __name__ == '__main__':
     main()

@@ -4,7 +4,7 @@ Created on 18 Mar 2015
 
 @author: paulross
 """
-from Exercises.RomeoAndJuliet.util import play
+from Advanced.RomeoAndJuliet.util import play
 
 def _is_stage_direction(line):
     """Returns True if the line is a stage direction."""
@@ -154,12 +154,12 @@ if __name__ == '__main__':
     s.add_actor('c')
     s.add_actor('d')
     g = s.gen_actors()
-    g
-    print next(g)
-    print next(g)
-    print next(g)
-    print next(g)
-    print next(g)
+
+    print(next(g))
+    print(next(g))
+    print(next(g))
+    print(next(g))
+    print(next(g))
 #     print next(s)
 #     print next(s)
 #     print next(s)
