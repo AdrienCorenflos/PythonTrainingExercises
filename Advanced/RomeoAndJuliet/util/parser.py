@@ -107,6 +107,19 @@ def get_play():
         play.add_act(act)
     return play
 
+
+def words_routine():
+    actor = None
+    words = []
+    play_info = []
+    actor, words = yield
+    while True:
+        line = yield (actor, words, play_info)
+        _ = 1+1
+
+
+
+
 def get_acts_scenes_actors():
     """Returns a dict of acts, scenes and actor names:
     {act : {scene : [actors, ...], ...}, ...}
@@ -120,10 +133,16 @@ def get_acts_scenes_actors():
         words = line.split()
         if len(words):
             if len(words) and words[0] in play.DRAMATIS_PERSONAE:
-                actors.append(words[0])
+                if len(actors):
+                    actors.append(next(routine))
+                routine = words_routine()
+                routine.send((words[0], words[1:]))
+                actors.append((words[0], words[1:]))  # First line of actor with one name
             elif len(words) > 1 and ' '.join(words[:2]) in play.DRAMATIS_PERSONAE:
-                actors.append(' '.join(words[:2]))
+                routine = words_routine()
+                actors.append(' '.join(words[:2]))  # First line of actor with two names
             elif len(words) > 1 and words[0] == 'ACT' and words[1] != act:
+                # New act
                 if len(actors):
                     ret_val[act_num][scene_num] = actors
                     actors = []
@@ -132,10 +151,15 @@ def get_acts_scenes_actors():
                 scene_num = 0
                 act = words[1]
             elif act is not None and words[0] == 'SCENE':
+                # New scene
                 if len(actors):
                     ret_val[act_num][scene_num] = actors
                     actors = []
                 scene_num += 1
+            else:
+                # Speach continues
+                _ = 1+1
+                pass
     if len(actors):
         ret_val[act_num][scene_num] = actors
         actors = []

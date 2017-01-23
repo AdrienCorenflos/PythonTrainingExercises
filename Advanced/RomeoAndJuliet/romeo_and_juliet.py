@@ -84,13 +84,14 @@ Created on 18 Mar 2015
 
 @author: paulross
 """
-import random
-
+import numpy.random as random
+from numpy import asarray, sum
 from Advanced.RomeoAndJuliet.util import parser
 from Advanced.RomeoAndJuliet.util import result
 
+
 # TODO: One Markov chain per scene
-#----------------- Strategies ----------------
+# ----------------- Strategies ----------------
 
 def strat_empty(play):
     """You can copy and modify this strategy."""
@@ -99,10 +100,10 @@ def strat_empty(play):
         for scene in act.gen_scenes():
             ret_val.set_act_scene(act, scene)
             while True:
-                #--------- Your code starts here ------
+                # --------- Your code starts here ------
                 # What are you going to choose?
                 my_choice = 'ROMEO'
-                #--------- Your code ends here ------
+                # --------- Your code ends here ------
                 actual_actor = ret_val.guess(my_choice)
                 if actual_actor is None:
                     break
@@ -129,8 +130,9 @@ def strat_random_all(play):
                     break
     return ret_val
 
+
 def strat_random_scene(play):
-    """Just guess a random actor."""
+    """Weighted guess"""
     ret_val = result.Result()
     # Get all the actors, we are going to guess one randomly
 
@@ -138,17 +140,59 @@ def strat_random_scene(play):
     for act in play.gen_acts():
         # Iterate through the scenes
         for scene in act.gen_scenes():
-            all_actors = scene._actors
+            all_actors = list(set(scene._actors))
             # Prepare the results object for this act/scene
             ret_val.set_act_scene(act, scene)
             # Iterate through the actors in the scene
+            actual_actor = None
+            weights = asarray([1.] * len(all_actors))
             while True:
-                my_choice = random.choice(all_actors)
+                if actual_actor is None:
+                    my_choice = random.choice(all_actors, p=weights / sum(weights))
+                else:
+                    current_actors, current_weights = zip(
+                        *[(actor, weight) for actor, weight in zip(all_actors, weights) if actor != actual_actor])
+                    current_weights = asarray(current_weights)
+                    my_choice = random.choice(list(current_actors), p=current_weights / sum(current_weights))
                 actual_actor = ret_val.guess(my_choice)
-                # If the actual actor is None it is the end of the scene
                 if actual_actor is None:
                     break
+                index_actor = all_actors.index(actual_actor)
+                weights[index_actor] += 1.
+
     return ret_val
+
+def strat_random_scene(play):
+    """Weighted guess"""
+    ret_val = result.Result()
+    # Get all the actors, we are going to guess one randomly
+
+    # Iterate through the acts
+    for act in play.gen_acts():
+        # Iterate through the scenes
+        for scene in act.gen_scenes():
+            all_actors = list(set(scene._actors))
+            # Prepare the results object for this act/scene
+            ret_val.set_act_scene(act, scene)
+            # Iterate through the actors in the scene
+            actual_actor = None
+            weights = asarray([1.] * len(all_actors))
+            while True:
+                if actual_actor is None:
+                    my_choice = random.choice(all_actors, p=weights / sum(weights))
+                else:
+                    current_actors, current_weights = zip(
+                        *[(actor, weight) for actor, weight in zip(all_actors, weights) if actor != actual_actor])
+                    current_weights = asarray(current_weights)
+                    my_choice = random.choice(list(current_actors), p=current_weights / sum(current_weights))
+                actual_actor = ret_val.guess(my_choice)
+                if actual_actor is None:
+                    break
+                index_actor = all_actors.index(actual_actor)
+                weights[index_actor] += 1.
+
+    return ret_val
+
 
 
 def main():
@@ -165,6 +209,7 @@ def main():
     result = strat_random_scene(play)
     print(result)
     print()
+
 
 if __name__ == '__main__':
     main()

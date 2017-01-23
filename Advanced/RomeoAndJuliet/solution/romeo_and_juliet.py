@@ -86,9 +86,9 @@ Created on 18 Mar 2015
 """
 import random
 
-from Exercises.RomeoAndJuliet.util import parser
-from Exercises.RomeoAndJuliet.util import result
-import MarkovChain
+from Advanced.RomeoAndJuliet.util import parser
+from Advanced.RomeoAndJuliet.util import result
+from Advanced.RomeoAndJuliet.solution import MarkovChain
 
 #----------------- Strategies ----------------
 
@@ -113,7 +113,7 @@ def strat_random_all(play):
     """Just guess a random actor."""
     ret_val = result.Result()
     # Get all the actors, we are going to guess one randomly
-    all_actors = play.dramatis_personae.keys()
+    all_actors = list(play.dramatis_personae.keys())
     # Iterate through the acts
     for act in play.gen_acts():
         # Iterate through the scenes
@@ -191,24 +191,24 @@ def strat_markov_chain(play):
         
 def main():
     play = parser.get_play()
-    print 'Empty strategy (always ROMEO):'
+    print('Empty strategy (always ROMEO):')
     result = strat_empty(play)
-    print result
-    print
-    print 'Random in play:'
+    print(result)
+    print()
+    print('Random in play:')
     result = strat_random_all(play)
-    print result
-    print
-    print 'Alternating actors:'
+    print(result)
+    print()
+    print('Alternating actors:')
     result = strat_alternate_actors(play)
-    print result
-    print
-    print 'Markov chain:'
+    print(result)
+    print()
+    print('Markov chain:')
     result = strat_markov_chain(play)
-    print result
-    print
+    print(result)
+    print()
 
 
 if __name__ == '__main__':
     main()
-    print 'Bye, bye!'
+    print('Bye, bye!')
